@@ -7,10 +7,12 @@ const GlobalStyle = createGlobalStyle`
   html,
   body {
     font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100%;
-    margin: 0 auto;
-    color: ${({ theme }) => theme.colors.text};
+    color: #202020;
     background-color: #fbfbfb;
   }
 
