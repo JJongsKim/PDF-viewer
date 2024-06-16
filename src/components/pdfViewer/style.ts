@@ -7,12 +7,16 @@ const PreviewWrap = styled.div`
 `;
 
 const PreviewLabel = styled.label`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
   font-size: 0.9rem;
   font-weight: 600;
-  margin: 5px 0;
 `;
 
-const PreviewBox = styled.div`
+const PreviewBox = styled.figure`
   display: flex;
   align-items: center;
   width: 500px;
@@ -20,4 +24,17 @@ const PreviewBox = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.light_gray};
 `;
 
-export { PreviewWrap, PreviewLabel, PreviewBox };
+const PageMovingWrap = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  margin: 10px 0;
+
+  button {
+    padding: 5px;
+    background-color: ${({ theme }) => theme.colors.light_gray};
+  }
+`;
+
+export { PreviewWrap, PreviewLabel, PreviewBox, PageMovingWrap };
