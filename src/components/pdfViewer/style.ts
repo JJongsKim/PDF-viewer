@@ -13,8 +13,10 @@ const PreviewLabel = styled.label`
 `;
 
 const PreviewBox = styled.div`
+  display: flex;
+  align-items: center;
   width: 500px;
-  height: 600px;
+  height: 710px;
   border: 1px solid ${({ theme }) => theme.colors.light_gray};
 `;
 
