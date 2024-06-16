@@ -10,14 +10,12 @@ const PdfUpload = () => {
     url: '',
   });
 
-  const { name, file, url } = fileInfo;
+  const { name, file, url } = fileInfo; // 파일 이름, 파일 정보(Blob 타입), 파일 URL
 
   const handleUploadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const uploadFile = e.target.files;
 
     if (uploadFile !== null) {
-      console.log(e.target.files);
-
       setFileInfo({
         file: uploadFile[0],
         name: uploadFile[0].name,

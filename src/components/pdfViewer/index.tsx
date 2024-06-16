@@ -29,6 +29,7 @@ const PdfViewer = ({ file }: PdfViewerProps) => {
     }
   };
 
+  // 📌 페이지별 PDF 렌더링
   const renderPage = useCallback(
     async (currentPage: number, pdf: PDFDocumentProxy | null) => {
       try {
@@ -64,6 +65,7 @@ const PdfViewer = ({ file }: PdfViewerProps) => {
     [currentPdf],
   );
 
+  // 📌 props로 건네받는 file의 값이 달라질 때, 새로운 PDF Reader를 currentPdf에 저장
   useEffect(() => {
     setCurrentPage(1); // 파일 변경 시 초기화
 
@@ -73,7 +75,7 @@ const PdfViewer = ({ file }: PdfViewerProps) => {
     reader.onload = async () => {
       if (reader.result) {
         const loading = pdfjsLib.getDocument(reader.result);
-        loading.promise
+        loading.promise // pdfjs는 기본적으로 promise 사용
           .then(pdf => {
             setCurrentPdf(pdf);
           })
@@ -84,6 +86,7 @@ const PdfViewer = ({ file }: PdfViewerProps) => {
     };
   }, [file]);
 
+  // 📌 PDF 정보, 페이지, renderPage 함수에 따라 renderPage 실행
   useEffect(() => {
     renderPage(currentPage, currentPdf);
   }, [currentPdf, currentPage, renderPage]);
