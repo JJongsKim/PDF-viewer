@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as pdfjsLib from 'pdfjs-dist';
 
 import * as S from './style';
@@ -12,6 +13,8 @@ interface PdfViewerProps {
 pdfjsLib.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.mjs`;
 
 const PdfViewer = ({ file }: PdfViewerProps) => {
+  const navigate = useNavigate();
+
   const [currentPdf, setCurrentPdf] = useState<PDFDocumentProxy | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -109,6 +112,10 @@ const PdfViewer = ({ file }: PdfViewerProps) => {
       <S.PreviewBox ref={previewBoxRef}>
         <canvas ref={canvasRef} />
       </S.PreviewBox>
+
+      <S.ParsingButton type="button" onClick={() => navigate('/result')}>
+        PDF 파싱하기
+      </S.ParsingButton>
     </S.PreviewWrap>
   );
 };
