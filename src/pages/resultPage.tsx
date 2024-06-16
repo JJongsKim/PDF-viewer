@@ -1,5 +1,7 @@
+import PdfParsingTable from '../components/pdfParsingTable';
+
 const ResultPage = () => {
-  return <div>결과 페이지</div>;
+  return <PdfParsingTable />;
 };
 
 export default ResultPage;
