@@ -1,5 +1,7 @@
 # PDF 뷰어 - 파싱
 
+PDF를 업로드하고, 원하는 페이지의 콘텐츠를 파싱해봅시다!
+
 ## [프로젝트 실행 방법]
 
 ```
@@ -22,3 +24,8 @@ yarn start
 | Chore    | 기타 작업                    |
 
 ## [프로젝트 UI 확인하기]
+
+|PDF 업로드 및 미리보기|텍스트 파싱|
+|:--:|:--:|
+|![pdf업로드](https://github.com/JJongsKim/PDF-viewer/assets/81777778/6f9c65ec-3bba-4a81-998a-08e45d3b406a)|![파싱된데이터](https://github.com/JJongsKim/PDF-viewer/assets/81777778/efed9e68-07f3-49bd-b792-24f939f99fe5)|
+
