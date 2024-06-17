@@ -37,4 +37,17 @@ const PageMovingWrap = styled.div`
   }
 `;
 
-export { PreviewWrap, PreviewLabel, PreviewBox, PageMovingWrap };
+const ParsingButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 40px;
+  margin: 10px 0;
+  background-color: ${({ theme }) => theme.colors.blue};
+
+  color: white;
+  font-weight: 500;
+`;
+
+export { PreviewWrap, PreviewLabel, PreviewBox, PageMovingWrap, ParsingButton };

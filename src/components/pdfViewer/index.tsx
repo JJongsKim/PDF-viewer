@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as pdfjsLib from 'pdfjs-dist';
 
 import * as S from './style';
-import type { PDFDocumentProxy } from 'pdfjs-dist/types/src/display/api';
+import type { PDFDocumentProxy, TextItem } from 'pdfjs-dist/types/src/display/api';
 
 interface PdfViewerProps {
   file: Blob; // 멀티미디어 데이터용 타입
@@ -12,8 +13,11 @@ interface PdfViewerProps {
 pdfjsLib.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.mjs`;
 
 const PdfViewer = ({ file }: PdfViewerProps) => {
+  const navigate = useNavigate();
+
   const [currentPdf, setCurrentPdf] = useState<PDFDocumentProxy | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const previewBoxRef = useRef<HTMLDivElement>(null);
 
@@ -91,6 +95,52 @@ const PdfViewer = ({ file }: PdfViewerProps) => {
     renderPage(currentPage, currentPdf);
   }, [currentPdf, currentPage, renderPage]);
 
+  // 📌 신•구조문 대비표 페이지 파싱
+  // TODO : 이렇게 페이지를 일일이 써서 파싱하는 게 맞는것인가...
+  const handleParsedText = useCallback(async () => {
+    const parsedPageText = [];
+
+    if (currentPdf) {
+      for (let pageNum = 6; pageNum <= 8; pageNum++) {
+        try {
+          const page = await currentPdf.getPage(pageNum);
+          const textContent = await page.getTextContent();
+          const items = textContent.items.map(item => (item as TextItem).str);
+          const formattedItems = formatTextContent(items);
+
+          parsedPageText.push(formattedItems);
+        } catch (error) {
+          console.error('PDF 파싱 실패:::', error);
+        }
+      }
+    }
+    navigate('/result', { state: parsedPageText });
+  }, [currentPdf]);
+
+  // 📌 파싱된 텍스트가 글자별로 따로 추출되기 때문에 띄어쓰기별로 합치기 위한 포맷팅 함수
+  const formatTextContent = (items: string[]) => {
+    const formattedArray = [];
+    let currentArray: string[] = [];
+
+    items.forEach(item => {
+      if (item === '') {
+        // ""를 만나기 전까지의 모든 텍스트 합치기
+        if (currentArray.length > 0) {
+          formattedArray.push(currentArray);
+          currentArray = [];
+        }
+      } else {
+        currentArray.push(item);
+      }
+    });
+
+    if (currentArray.length > 0) {
+      formattedArray.push(currentArray);
+    }
+
+    return formattedArray;
+  };
+
   return (
     <S.PreviewWrap>
       <S.PreviewLabel>
@@ -109,6 +159,10 @@ const PdfViewer = ({ file }: PdfViewerProps) => {
       <S.PreviewBox ref={previewBoxRef}>
         <canvas ref={canvasRef} />
       </S.PreviewBox>
+
+      <S.ParsingButton type="button" onClick={handleParsedText}>
+        PDF 파싱하기
+      </S.ParsingButton>
     </S.PreviewWrap>
   );
 };

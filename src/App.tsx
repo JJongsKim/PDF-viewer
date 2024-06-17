@@ -1,8 +1,10 @@
 import { ThemeProvider } from 'styled-components';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import GlobalStyle from './styles/globalStyle';
 import { theme } from './styles/theme';
-import PdfUpload from './components/pdfUpload';
+import MainPage from './pages/mainPage';
+import ResultPage from './pages/resultPage';
 
 /*
   [과제 항목]
@@ -16,7 +18,12 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <PdfUpload />
+      <Router>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/result" element={<ResultPage />} />
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }
