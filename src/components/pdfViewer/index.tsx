@@ -105,7 +105,7 @@ const PdfViewer = ({ file }: PdfViewerProps) => {
         try {
           const page = await currentPdf.getPage(pageNum);
           const textContent = await page.getTextContent();
-          const items = textContent.items.map(item => (item as TextItem).str);
+          const items = textContent.items as TextItem[];
           const formattedItems = formatTextContent(items);
 
           parsedPageText.push(formattedItems);
@@ -118,27 +118,47 @@ const PdfViewer = ({ file }: PdfViewerProps) => {
   }, [currentPdf]);
 
   // 📌 파싱된 텍스트가 글자별로 따로 추출되기 때문에 띄어쓰기별로 합치기 위한 포맷팅 함수
-  const formatTextContent = (items: string[]) => {
-    const formattedArray = [];
-    let currentArray: string[] = [];
+  const formatTextContent = (items: TextItem[]) => {
+    const leftColumn: string[] = [];
+    const rightColumn: string[] = [];
+    const leftColumnXThreshold = 250;
+
+    let lastY: number | null = null;
+    let currentLine: { left: string[]; right: string[] } = { left: [], right: [] };
 
     items.forEach(item => {
-      if (item === '') {
-        // ""를 만나기 전까지의 모든 텍스트 합치기
-        if (currentArray.length > 0) {
-          formattedArray.push(currentArray);
-          currentArray = [];
+      const { str, transform } = item;
+      const x = transform[4];
+      const y = transform[5];
+
+      if (lastY === null || Math.abs(lastY - y) < 10) {
+        if (x < leftColumnXThreshold) {
+          currentLine.left.push(str);
+        } else {
+          currentLine.right.push(str);
         }
       } else {
-        currentArray.push(item);
+        if (currentLine.left.length > 0 || currentLine.right.length > 0) {
+          leftColumn.push(currentLine.left.join(' '));
+          rightColumn.push(currentLine.right.join(' '));
+        }
+        currentLine = { left: [], right: [] };
+
+        if (x < leftColumnXThreshold) {
+          currentLine.left.push(str);
+        } else {
+          currentLine.right.push(str);
+        }
       }
+      lastY = y;
     });
 
-    if (currentArray.length > 0) {
-      formattedArray.push(currentArray);
+    if (currentLine.left.length > 0 || currentLine.right.length > 0) {
+      leftColumn.push(currentLine.left.join(' '));
+      rightColumn.push(currentLine.right.join(' '));
     }
 
-    return formattedArray;
+    return [leftColumn, rightColumn] as [string[], string[]];
   };
 
   return (
